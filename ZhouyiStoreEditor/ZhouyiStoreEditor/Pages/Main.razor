@@ -1,0 +1,134 @@
+﻿@page "/"
+
+<PageTitle>
+    ZhouyiStore Editor
+</PageTitle>
+
+<div id="tool-bar">
+    <label id="tool-bar-new-store" @onclick="NewStore">
+        New Store
+    </label>
+
+    <InputFile 
+        id="tool-bar-open-store-input-file" 
+        OnChange="OpenStore"
+        hidden="hidden" 
+        accept=".json" />
+    <label id="tool-bar-open-store" for="tool-bar-open-store-input-file" >
+        Open Store
+    </label>
+
+    <label id="tool-bar-export-store" @onclick="CloseStore">
+        Close Store
+    </label>
+
+    <label id="tool-bar-export-store" @onclick="ExportStore">
+        Export Store
+    </label>
+</div>
+
+<PromptBar @ref="promptBar" />
+<ConfirmCloseDialog @ref="confirmDialog" />
+
+@if (StoreManager.Store is null)
+{
+    <div>
+        Open a ZhouyiStore file or create a new one.
+    </div>
+}
+else
+{
+    <EditorMain Store="@StoreManager.Store" />
+}
+
+@inject ILogger<Main> Logger
+@inject FileService FileService
+@inject StoreManager StoreManager
+
+@code
+{
+    private PromptBar promptBar;
+    private ConfirmCloseDialog confirmDialog;
+
+    protected override async Task OnInitializedAsync()
+    {
+        void OnStoreManagerAutoSaved(bool succeeded)
+        {
+            if (succeeded)
+                promptBar.ShowInformation($"Automatically saved to browser storage.");
+            else
+                promptBar.ShowError("Failed to save the store. Export it at once!");
+        }
+        StoreManager.OnAutoSaved = new EventCallback<bool>(this, OnStoreManagerAutoSaved);
+        if (await StoreManager.TryLoadFromLocalStorage())
+            promptBar.ShowInformation("Successfully loaded the last edited store.");
+    }
+
+    void NewStore()
+    {
+        void ContinueNew()
+        {
+            StoreManager.NewStore();
+            promptBar.ShowInformation("Store created.");
+        }
+
+        if (StoreManager.Store is not null)
+        {
+            confirmDialog.OnContinueSelected = new EventCallback(this, ContinueNew);
+            confirmDialog.Display();
+        }
+        else
+        {
+            ContinueNew();
+        }
+    }
+
+    async Task OpenStore(InputFileChangeEventArgs e)
+    {
+        async Task ContinueOpen()
+        {
+            promptBar.ShowInformation("Loading store file...");
+            if (await StoreManager.OpenStore(e.File))
+                promptBar.ShowInformation("Store file loaded successfully.");
+            else
+                promptBar.ShowError("Failed to load the store file. Was it corrupted or too large?");
+        }
+
+        if(StoreManager.Store is not null)
+        {
+            confirmDialog.OnContinueSelected = new EventCallback(this, ContinueOpen);
+            confirmDialog.Display();
+        }
+        else
+        {
+            await ContinueOpen();
+        }
+    }
+
+    async Task ExportStore()
+    {
+        promptBar.ShowInformation($"Generating file content...");
+        using var stream = await StoreManager.ExportStoreAsStream();
+        promptBar.ShowInformation($"Content generated.");
+        await FileService.Download(stream, "store.json");
+    }
+
+    async Task CloseStore()
+    {
+        async Task ContinueClose()
+        {
+            await StoreManager.CloseStore();
+            promptBar.ShowInformation($"Store closed.");
+        }
+
+        if (StoreManager.Store is not null)
+        {
+            confirmDialog.OnContinueSelected = new EventCallback(this, ContinueClose);
+            confirmDialog.Display();
+        }
+        else
+        {
+            await ContinueClose();
+        }
+    }
+}

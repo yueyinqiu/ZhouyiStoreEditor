@@ -1,0 +1,12 @@
+﻿@using ZhouyiStoreEditor.Pages.Editors;
+
+<div>
+    <TitleAndTagsEditor Store="@Store" />
+    <TrigramEditor Store="@Store" />
+</div>
+
+@code
+{
+    [Parameter]
+    public ZhouyiStore Store { get; set; }
+}

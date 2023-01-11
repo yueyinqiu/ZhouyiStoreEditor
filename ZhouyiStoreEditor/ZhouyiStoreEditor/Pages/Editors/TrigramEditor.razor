@@ -1,0 +1,77 @@
+﻿<div>
+    <div>
+    <InputSelect @bind-Value="TrigramSelectBinding">
+        <option value="-">Select Trigram...</option>
+            @for (int i = 0; i < 8; i++)
+            {
+                var s = Convert.ToString(i, 2).PadLeft(3, '0');
+                <option value="@s">@s</option>
+            }
+    </InputSelect>
+    </div>
+    <div>
+        <div>
+            Trigram Name: 
+            <InputText @bind-Value="NameBinding" disabled="@(selectedTrigram is null)" />
+        </div>
+        <div>
+            Trigram Nature: 
+            <InputText @bind-Value="NatureBinding" disabled="@(selectedTrigram is null)" />
+        </div>
+    </div>
+</div>
+
+@code
+{
+    string TrigramSelectBinding
+    {
+        get
+        {
+            return selectedTrigram?.Painting?.ToString() ?? "-";
+        }
+        set
+        {
+            if (!Painting.TryParse(value, out var painting))
+                selectedTrigram = null;
+            else
+                selectedTrigram = Store.GetTrigram(painting);
+        }
+    }
+
+    ZhouyiTrigram selectedTrigram;
+
+    string NameBinding
+    {
+        get
+        {
+            return selectedTrigram?.Name;
+        }
+        set
+        {
+            if (selectedTrigram is not null)
+            {
+                selectedTrigram.Name = value;
+                Store.UpdateStore(selectedTrigram);
+            }
+        }
+    }
+
+    string NatureBinding
+    {
+        get
+        {
+            return selectedTrigram?.Nature;
+        }
+        set
+        {
+            if (selectedTrigram is not null)
+            {
+                selectedTrigram.Nature = value;
+                Store.UpdateStore(selectedTrigram);
+            }
+        }
+    }
+
+    [Parameter]
+    public ZhouyiStore Store { get; set; }
+}

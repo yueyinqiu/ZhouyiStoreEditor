@@ -1,0 +1,44 @@
+﻿<div id="prompt-bar">
+    [@time.ToString("HH:mm:ss")] @text
+</div>
+
+@inject ILogger<PromptBar> logger
+@code
+{
+    public enum PromptLevel
+    {
+        Information,
+        Warning,
+        Error
+    }
+
+    DateTime time = DateTime.Now;
+    string text = "Hello!";
+
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    public void ShowPrompt(string text, PromptLevel level)
+    {
+        this.time = DateTime.Now;
+        this.text = text;
+        this.shouldRender = true;
+        this.StateHasChanged();
+        this.shouldRender = false;
+    }
+
+    public void ShowInformation(string text)
+    {
+        this.ShowPrompt(text, PromptLevel.Information);
+    }
+
+    public void ShowWarning(string text)
+    {
+        this.ShowPrompt(text, PromptLevel.Warning);
+    }
+
+    public void ShowError(string text)
+    {
+        this.ShowPrompt(text, PromptLevel.Error);
+    }
+}

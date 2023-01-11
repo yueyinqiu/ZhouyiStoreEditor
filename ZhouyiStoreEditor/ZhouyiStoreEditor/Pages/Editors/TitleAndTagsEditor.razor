@@ -1,0 +1,31 @@
+﻿<div>
+    <div>
+        Store Title: <InputText @bind-Value="TitleBinding" />
+    </div>
+    <div>
+        Store Tags: <InputTextArea @bind-Value="TagsBinding" />
+    </div>
+</div>
+
+@code
+{
+    string TitleBinding
+    {
+        get => Store.Title;
+        set => Store.Title = value;
+    }
+
+    string TagsBinding
+    {
+        get => string.Join(Environment.NewLine, Store.Tags);
+        set
+        {
+            Store.Tags.Clear();
+            foreach (var tag in value.Split(Environment.NewLine))
+                Store.Tags.Add(tag);
+        }
+    }
+
+    [Parameter]
+    public ZhouyiStore Store { get; set; }
+}

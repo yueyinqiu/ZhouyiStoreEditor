@@ -1,0 +1,33 @@
+﻿<div>
+    <dialog open="@open">
+        <div>
+            This operation will remove the current store from browser storage.
+            Are you sure to continue?
+        </div>
+        <button @onclick="@Continue">Continue</button>
+        <button @onclick="@Cancel">Cancel</button>
+    </dialog>
+</div>
+
+@code
+{
+    bool open = false;
+
+    public EventCallback OnContinueSelected { get; set; }
+
+    public void Display()
+    {
+        open = true;
+        this.StateHasChanged();
+    }
+
+    async Task Continue()
+    {
+        open = false;
+        await OnContinueSelected.InvokeAsync();
+    }
+    void Cancel()
+    {
+        open = false;
+    }
+}
