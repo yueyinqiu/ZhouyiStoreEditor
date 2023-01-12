@@ -1,0 +1,141 @@
+﻿<div>
+    <div>
+        <InputSelect @bind-Value="HexagramSelectBinding">
+            <option value="-">Select Hexagram...</option>
+            @for (int i = 0; i < 64; i++)
+            {
+                var s = Convert.ToString(i, 2).PadLeft(6, '0');
+                <option value="@s">@s</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
+        <div>
+            Hexagram Index:
+            <InputText @bind-Value="bindings.HexagramIndex" disabled="@(selectedHexagram is null)" />
+        </div>
+        <div>
+            Hexagram Name: 
+            <InputText @bind-Value="bindings.HexagramName" disabled="@(selectedHexagram is null)" />
+        </div>
+        <div>
+            Hexagram Text:
+            <InputText @bind-Value="bindings.HexagramText" disabled="@(selectedHexagram is null)" />
+        </div>
+        <div>
+            Hexagram Xiang:
+            <InputText @bind-Value="bindings.HexagramXiang" disabled="@(selectedHexagram is null)" />
+        </div>
+        <div>
+            Tuan:
+            <InputText @bind-Value="bindings.Tuan" disabled="@(selectedHexagram is null)" />
+        </div>
+        <div>
+            First Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.FirstLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.FirstLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Second Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.SecondLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.SecondLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Third Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.ThirdLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.ThirdLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Fourth Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.FourthLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.FourthLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Fifth Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.FifthLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.FifthLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Sixth Line:
+            <div>
+                Line Text:
+                <InputText @bind-Value="bindings.SixthLineText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Line Xiang:
+                <InputText @bind-Value="bindings.SixthLineXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+        <div>
+            Yong:
+            <div>
+                Yong Text:
+                <InputText @bind-Value="bindings.YongText" disabled="@(selectedHexagram is null)" />
+            </div>
+            <div>
+                Yong Xiang:
+                <InputText @bind-Value="bindings.YongXiang" disabled="@(selectedHexagram is null)" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    string HexagramSelectBinding
+    {
+        get
+        {
+            return selectedHexagram?.Painting?.ToString() ?? "-";
+        }
+        set
+        {
+            if (!Painting.TryParse(value, out var painting) || painting.Count is not 6)
+                selectedHexagram = null;
+            else
+                selectedHexagram = Store.GetHexagram(painting);
+        }
+    }
+
+    ZhouyiHexagram selectedHexagram;
+
+    Bindings bindings;
+
+    protected override void OnInitialized()
+    {
+        this.bindings = new Bindings(this);
+    }
+
+    [Parameter]
+    public ZhouyiStore Store { get; set; }
+}

@@ -1,13 +1,13 @@
 ﻿<div>
     <div>
-    <InputSelect @bind-Value="TrigramSelectBinding">
-        <option value="-">Select Trigram...</option>
+        <InputSelect @bind-Value="TrigramSelectBinding">
+            <option value="-">Select Trigram...</option>
             @for (int i = 0; i < 8; i++)
             {
                 var s = Convert.ToString(i, 2).PadLeft(3, '0');
                 <option value="@s">@s</option>
             }
-    </InputSelect>
+        </InputSelect>
     </div>
     <div>
         <div>
@@ -31,7 +31,7 @@
         }
         set
         {
-            if (!Painting.TryParse(value, out var painting))
+            if (!Painting.TryParse(value, out var painting) || painting.Count is not 3)
                 selectedTrigram = null;
             else
                 selectedTrigram = Store.GetTrigram(painting);
