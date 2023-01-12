@@ -5,8 +5,6 @@
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-
-		<PublishTrimmed>false</PublishTrimmed>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -17,6 +15,10 @@
 		<PackageReference Include="YiJingFramework.Annotating.Zhouyi" Version="3.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<TrimmerRootAssembly Include="YiJingFramework.Annotating.Zhouyi" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
