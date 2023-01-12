@@ -1,4 +1,5 @@
 ﻿<div>
+    <h3>Hexagrams</h3>
     <div>
         <InputSelect @bind-Value="HexagramSelectBinding">
             <option value="-">Select Hexagram...</option>
@@ -10,6 +11,7 @@
         </InputSelect>
     </div>
     <div>
+        <h4>Whole Hexagram</h4>
         <div>
             Hexagram Index:
             <InputText @bind-Value="bindings.HexagramIndex" disabled="@(selectedHexagram is null)" />
@@ -31,7 +33,7 @@
             <InputText @bind-Value="bindings.Tuan" disabled="@(selectedHexagram is null)" />
         </div>
         <div>
-            First Line:
+            <h4>First Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.FirstLineText" disabled="@(selectedHexagram is null)" />
@@ -42,7 +44,7 @@
             </div>
         </div>
         <div>
-            Second Line:
+            <h4>Second Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.SecondLineText" disabled="@(selectedHexagram is null)" />
@@ -53,7 +55,7 @@
             </div>
         </div>
         <div>
-            Third Line:
+            <h4>Third Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.ThirdLineText" disabled="@(selectedHexagram is null)" />
@@ -64,7 +66,7 @@
             </div>
         </div>
         <div>
-            Fourth Line:
+            <h4>Fourth Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.FourthLineText" disabled="@(selectedHexagram is null)" />
@@ -75,7 +77,7 @@
             </div>
         </div>
         <div>
-            Fifth Line:
+            <h4>Fifth Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.FifthLineText" disabled="@(selectedHexagram is null)" />
@@ -86,7 +88,7 @@
             </div>
         </div>
         <div>
-            Sixth Line:
+            <h4>Sixth Line</h4>
             <div>
                 Line Text:
                 <InputText @bind-Value="bindings.SixthLineText" disabled="@(selectedHexagram is null)" />
@@ -97,7 +99,7 @@
             </div>
         </div>
         <div>
-            Yong:
+            <h4>Yong</h4>
             <div>
                 Yong Text:
                 <InputText @bind-Value="bindings.YongText" disabled="@(selectedHexagram is null)" />

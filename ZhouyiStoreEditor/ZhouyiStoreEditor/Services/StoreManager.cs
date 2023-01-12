@@ -18,14 +18,14 @@ namespace ZhouyiStoreEditor.Services
         {
             this.localStorage = localStorage;
 
-            autoSaveTimer = new(new TimeSpan(0, 1, 0));
+            autoSaveTimer = new(new TimeSpan(0, 0, 30));
             autoSaveTimer.Elapsed += async (_, _) => {
                 var s = await SaveToLocalStorage();
-                await OnAutoSaved.InvokeAsync(s);
+                await OnAutoSavedToLocalStorage.InvokeAsync(s);
             };
         }
 
-        public EventCallback<bool> OnAutoSaved { get; set; }
+        public EventCallback<bool> OnAutoSavedToLocalStorage { get; set; }
 
         public async Task<bool> SaveToLocalStorage()
         {
@@ -42,6 +42,7 @@ namespace ZhouyiStoreEditor.Services
                 return false;
             }
         }
+
         public async Task<bool> TryLoadFromLocalStorage()
         {
             try
@@ -62,11 +63,10 @@ namespace ZhouyiStoreEditor.Services
             }
         }
 
-        public async Task CloseStore()
+        public void CloseStore()
         {
             autoSaveTimer.Stop();
             this.Store = null;
-            await SaveToLocalStorage();
         }
 
         public void NewStore()

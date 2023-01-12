@@ -1,0 +1,104 @@
+﻿<div>
+    <h3>Xici</h3>
+    <div>
+        A: <InputTextArea @bind-Value="XiciABinding" />
+    </div>
+    <div>
+        B: <InputTextArea @bind-Value="XiciBBinding" />
+    </div>
+</div>
+<div>
+    <h3>Shuogua</h3>
+    <InputTextArea @bind-Value="ShuoguaBinding" />
+</div>
+<div>
+    <h3>Xugua</h3>
+    <InputTextArea @bind-Value="XuguaBinding" />
+</div>
+<div>
+    <h3>Zagua</h3>
+    <InputTextArea @bind-Value="ZaguaBinding" />
+</div>
+
+
+
+@code
+{
+    string XiciABinding
+    {
+        get
+        {
+            return xici.PartA;
+        }
+        set
+        {
+            xici.PartA = value;
+            Store.UpdateStore(xici);
+        }
+    }
+
+    string XiciBBinding
+    {
+        get
+        {
+            return xici.PartB;
+        }
+        set
+        {
+            xici.PartB = value;
+            Store.UpdateStore(xici);
+        }
+    }
+    string ShuoguaBinding
+    {
+        get
+        {
+            return shuogua.Content;
+        }
+        set
+        {
+            shuogua.Content = value;
+            Store.UpdateStore(shuogua);
+        }
+    }
+    string XuguaBinding
+    {
+        get
+        {
+            return xugua.Content;
+        }
+        set
+        {
+            xugua.Content = value;
+            Store.UpdateStore(xugua);
+        }
+    }
+    string ZaguaBinding
+    {
+        get
+        {
+            return zagua.Content;
+        }
+        set
+        {
+            zagua.Content = value;
+            Store.UpdateStore(zagua);
+        }
+    }
+
+    Xici xici;
+    Shuogua shuogua;
+    Xugua xugua;
+    Zagua zagua;
+
+    [Parameter]
+    public ZhouyiStore Store { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        xici = Store.GetXici();
+        shuogua = Store.GetShuogua();
+        xugua = Store.GetXugua();
+        zagua = Store.GetZagua();
+    }
+}

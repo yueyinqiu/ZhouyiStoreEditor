@@ -4,6 +4,10 @@
     ZhouyiStore Editor
 </PageTitle>
 
+<h1>ZhouyiStore Editor</h1>
+
+<ConfirmCloseDialog @ref="confirmDialog" />
+
 <div id="tool-bar">
     <label id="tool-bar-new-store" @onclick="NewStore">
         New Store
@@ -28,13 +32,15 @@
 </div>
 
 <PromptBar @ref="promptBar" />
-<ConfirmCloseDialog @ref="confirmDialog" />
 
 @if (StoreManager.Store is null)
 {
     <div>
         Open a ZhouyiStore file or create a new one.
     </div>
+    <button @onclick="TryRestoreStore">
+        Try to restore the last edited store. (NOT RELIABLE)
+    </button>
 }
 else
 {
@@ -50,18 +56,12 @@ else
     private PromptBar promptBar;
     private ConfirmCloseDialog confirmDialog;
 
-    protected override async Task OnInitializedAsync()
+    async Task TryRestoreStore()
     {
-        void OnStoreManagerAutoSaved(bool succeeded)
-        {
-            if (succeeded)
-                promptBar.ShowInformation($"Automatically saved to browser storage.");
-            else
-                promptBar.ShowError("Failed to save the store. Export it at once!");
-        }
-        StoreManager.OnAutoSaved = new EventCallback<bool>(this, OnStoreManagerAutoSaved);
         if (await StoreManager.TryLoadFromLocalStorage())
-            promptBar.ShowInformation("Successfully loaded the last edited store.");
+            promptBar.ShowInformation("Loaded the last edited store.");
+        else
+            promptBar.ShowWarning("Failed to loaded the last edited store.");
     }
 
     void NewStore()
@@ -70,6 +70,7 @@ else
         {
             StoreManager.NewStore();
             promptBar.ShowInformation("Store created.");
+            this.StateHasChanged();
         }
 
         if (StoreManager.Store is not null)
@@ -89,7 +90,10 @@ else
         {
             promptBar.ShowInformation("Loading store file...");
             if (await StoreManager.OpenStore(e.File))
+            {
                 promptBar.ShowInformation("Store file loaded successfully.");
+                this.StateHasChanged();
+            }
             else
                 promptBar.ShowError("Failed to load the store file. Was it corrupted or too large?");
         }
@@ -113,12 +117,13 @@ else
         await FileService.Download(stream, "store.json");
     }
 
-    async Task CloseStore()
+    void CloseStore()
     {
-        async Task ContinueClose()
+        void ContinueClose()
         {
-            await StoreManager.CloseStore();
+            StoreManager.CloseStore();
             promptBar.ShowInformation($"Store closed.");
+            this.StateHasChanged();
         }
 
         if (StoreManager.Store is not null)
@@ -128,7 +133,7 @@ else
         }
         else
         {
-            await ContinueClose();
+            ContinueClose();
         }
     }
 }
