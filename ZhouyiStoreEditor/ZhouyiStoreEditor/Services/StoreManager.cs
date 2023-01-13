@@ -4,6 +4,7 @@ using System.Text.Json;
 using YiJingFramework.Annotating.Zhouyi;
 using Blazored.LocalStorage;
 using Microsoft.JSInterop;
+using ZhouyiStoreEditor.Serialization;
 
 namespace ZhouyiStoreEditor.Services
 {
@@ -81,7 +82,8 @@ namespace ZhouyiStoreEditor.Services
             try
             {
                 using var stream = file.OpenReadStream();
-                var store = await JsonSerializer.DeserializeAsync<ZhouyiStore>(stream);
+                var store = await JsonSerializer.DeserializeAsync(
+                    stream, ZhouyiStoreSerializerContext.Default.ZhouyiStore);
                 autoSaveTimer.Stop();
                 this.Store = store ?? new ZhouyiStore(null);
                 autoSaveTimer.Start();
@@ -100,7 +102,8 @@ namespace ZhouyiStoreEditor.Services
         public async Task<Stream> ExportStoreAsStream()
         {
             var stream = new MemoryStream();
-            await JsonSerializer.SerializeAsync(stream, Store);
+            await JsonSerializer.SerializeAsync(stream, Store, 
+                ZhouyiStoreSerializerContext.Default.ZhouyiStore);
             stream.Position = 0;
             return stream;
         }
